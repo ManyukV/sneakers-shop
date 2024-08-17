@@ -4,8 +4,20 @@ import { onMounted, ref, watch, reactive, provide } from 'vue'
 import Header from './components/header.vue'
 import cardList from './components/card-list.vue'
 import Banner from './components/banner.vue'
+import modalBusket from './components/modal-busket.vue'
 
 const items = ref([])
+const cart = ref([])
+
+const modalStatus = ref(false)
+
+function closeModal() {
+  modalStatus.value = false
+}
+
+function openModal() {
+  modalStatus.value = true
+}
 
 const filters = reactive({
   sortBy: 'title',
@@ -47,6 +59,17 @@ async function addToFavor(item) {
   }
 }
 
+function addToBusket(item) {
+  if (!item.isAdd) {
+    cart.value.push(item)
+    item.isAdd = true
+  } else {
+    cart.value.splice(cart.value.indexOf(item), 1)
+    item.isAdd = false
+  }
+  console.log(cart)
+}
+
 function onChangeSelect(event) {
   filters.sortBy = event.target.value
 }
@@ -86,12 +109,17 @@ onMounted(async () => {
 
 watch(filters, fetchItems)
 
-provide('addToFavor', addToFavor)
+provide('modal', {
+  cart,
+  closeModal,
+  openModal
+})
 </script>
 
 <template>
+  <modalBusket v-if="modalStatus" />
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
-    <Header />
+    <Header @open-modal="openModal" />
     <Banner />
 
     <div class="p-10">
@@ -116,7 +144,7 @@ provide('addToFavor', addToFavor)
           </div>
         </div>
       </div>
-      <cardList :items="items" @addToFavor="addToFavor" />
+      <cardList :items="items" @add-to-favor="addToFavor" @add-to-busket="addToBusket" />
     </div>
   </div>
 </template>

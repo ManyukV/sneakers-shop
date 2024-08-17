@@ -1,8 +1,5 @@
 <script setup>
-defineProps({
-  title: String,
-  price: Number
-})
+const emit = defineEmits(['openModal'])
 </script>
 
 <template>
@@ -15,7 +12,10 @@ defineProps({
       </div>
     </div>
     <ul class="flex justify-between gap-10">
-      <li class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
+      <li
+        @click="() => emit('openModal')"
+        class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black"
+      >
         <img src="/cart.svg" alt="cart" />
         <span>1205 руб</span>
       </li>
