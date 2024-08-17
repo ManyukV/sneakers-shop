@@ -19,11 +19,11 @@ defineProps({
         <img src="/cart.svg" alt="cart" />
         <span>1205 руб</span>
       </li>
-      <li class="flex items-center gap-3 text-gray-500 hover:text-black">
+      <li class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
         <img src="/heart.svg" alt="cart" />
         <span>Закладки</span>
       </li>
-      <li class="flex items-center gap-3 text-gray-500 hover:text-black">
+      <li class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
         <img src="/profile.svg" alt="cart" />
         <span>Профиль</span>
       </li>
