@@ -1,15 +1,51 @@
 <script setup>
 import axios from 'axios'
-import { onMounted, ref, watch, reactive } from 'vue'
+import { onMounted, ref, watch, reactive, provide } from 'vue'
 import Header from './components/header.vue'
 import cardList from './components/card-list.vue'
 import Banner from './components/banner.vue'
+
 const items = ref([])
 
 const filters = reactive({
   sortBy: 'title',
   search: ''
 })
+
+async function fetchFavor() {
+  try {
+    const { data: favorites } = await axios.get(`https://aa61e44bd2676303.mokky.dev/favorites`)
+    items.value = items.value.map((item) => {
+      const favorite = favorites.find((favorite) => favorite.productId === item.id)
+      if (!favorite) {
+        return item
+      }
+
+      return { ...item, isFavor: true, favoriteId: favorite.id }
+    })
+  } catch (e) {
+    console.log(err)
+  }
+}
+
+async function addToFavor(item) {
+  try {
+    if (!item.isFavor) {
+      const obj = {
+        productId: item.id
+      }
+      item.isFavor = true
+      const { data } = await axios.post(`https://aa61e44bd2676303.mokky.dev/favorites`, obj)
+      item.favoriteId = data.id
+    } else {
+      item.isFavor = false
+      await axios.delete(`https://aa61e44bd2676303.mokky.dev/favorites/${item.favoriteId}`)
+      item.favoriteId = null
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 function onChangeSelect(event) {
   filters.sortBy = event.target.value
@@ -32,15 +68,25 @@ async function fetchItems() {
     const { data } = await axios.get(`https://aa61e44bd2676303.mokky.dev/items`, {
       params
     })
-    items.value = data
+    items.value = data.map((obj) => ({
+      ...obj,
+      isFavor: false,
+      favoriteId: null,
+      isAdd: false
+    }))
   } catch (e) {
     console.log(err)
   }
 }
 
-onMounted(fetchItems)
+onMounted(async () => {
+  await fetchItems()
+  await fetchFavor()
+})
 
 watch(filters, fetchItems)
+
+provide('addToFavor', addToFavor)
 </script>
 
 <template>
@@ -70,7 +116,7 @@ watch(filters, fetchItems)
           </div>
         </div>
       </div>
-      <cardList :items="items" />
+      <cardList :items="items" @addToFavor="addToFavor" />
     </div>
   </div>
 </template>

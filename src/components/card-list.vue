@@ -5,13 +5,7 @@ defineProps({
   items: Array
 })
 
-function onClickAdd() {
-  alert('Добавленно в корзину')
-}
-
-function onClickFavor() {
-  alert('Добавленно в избранное')
-}
+const emit = defineEmits(['addToFavor'])
 </script>
 
 <template>
@@ -19,10 +13,12 @@ function onClickFavor() {
     <Card
       v-for="item in items"
       :key="item.id"
+      :id="item.id"
       :title="item.title"
       :img-url="item.imageUrl"
       :price="item.price"
-      :on-click-add="onClickAdd"
+      :is-favor="item.isFavor"
+      :on-click-favor="() => emit('addToFavor', item)"
     />
   </div>
 </template>

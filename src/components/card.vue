@@ -1,5 +1,6 @@
 <script setup>
 defineProps({
+  id: Number,
   imgUrl: String,
   title: String,
   price: Number,
@@ -20,7 +21,7 @@ defineProps({
       :src="!isFavor ? '/like-1.svg' : '/like-2.svg'"
       alt="like"
     />
-    <img :src="imgUrl" alt="sneaker" />
+    <img class="w-80" :src="imgUrl" alt="sneaker" />
     <p class="mt-2">{{ title }}</p>
     <div class="flex justify-between mt-5">
       <div class="flex flex-col">
