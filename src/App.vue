@@ -1,6 +1,7 @@
 <script setup>
 import Header from './components/header.vue'
 import cardList from './components/card-list.vue'
+import modalBusket from './components/modal-busket.vue'
 </script>
 
 <template>
