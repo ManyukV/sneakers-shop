@@ -1,7 +1,20 @@
 <script setup>
+import axios from 'axios'
+import { onMounted, ref } from 'vue'
 import Header from './components/header.vue'
 import cardList from './components/card-list.vue'
 import Banner from './components/banner.vue'
+
+const items = ref([])
+
+onMounted(async () => {
+  try {
+    const { data } = await axios.get('https://aa61e44bd2676303.mokky.dev/items')
+    items.value = data
+  } catch (e) {
+    console.log(err)
+  }
+})
 </script>
 
 <template>
@@ -30,7 +43,7 @@ import Banner from './components/banner.vue'
           </div>
         </div>
       </div>
-      <cardList />
+      <cardList :items="items" />
     </div>
   </div>
 </template>
