@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios'
-import { onMounted, ref, watch, reactive, provide } from 'vue'
+import { onMounted, ref, watch, reactive, provide, computed } from 'vue'
 import Header from './components/header.vue'
 import cardList from './components/card-list.vue'
 import Banner from './components/banner.vue'
@@ -8,8 +8,11 @@ import modalBusket from './components/modal-busket.vue'
 
 const items = ref([])
 const cart = ref([])
+const isCreatingOrder = ref(false)
 
 const modalStatus = ref(false)
+
+const totalPrice = computed(() => cart.value.reduce((acc, item) => acc + item.price, 0))
 
 function closeModal() {
   modalStatus.value = false
@@ -60,14 +63,37 @@ async function addToFavor(item) {
 }
 
 function addToBusket(item) {
-  if (!item.isAdd) {
-    cart.value.push(item)
-    item.isAdd = true
-  } else {
-    cart.value.splice(cart.value.indexOf(item), 1)
-    item.isAdd = false
+  cart.value.push(item)
+  item.isAdd = true
+}
+
+function removeFromBusket(item) {
+  cart.value.splice(cart.value.indexOf(item), 1)
+  item.isAdd = false
+}
+
+async function createOrder() {
+  try {
+    isCreatingOrder.value = true
+    const { data } = await axios.post('https://aa61e44bd2676303.mokky.dev/orders', {
+      items: cart.value,
+      totalPrice: totalPrice.value
+    })
+    cart.value = []
+    return data
+  } catch (err) {
+    console.log(err)
+  } finally {
+    isCreatingOrder.value = false
   }
-  console.log(cart)
+}
+
+function busketChange(item) {
+  if (!item.isAdd) {
+    addToBusket(item)
+  } else {
+    removeFromBusket(item)
+  }
 }
 
 function onChangeSelect(event) {
@@ -108,18 +134,31 @@ onMounted(async () => {
 })
 
 watch(filters, fetchItems)
+watch(cart, () => {
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdd: false
+  }))
+})
 
 provide('modal', {
   cart,
   closeModal,
-  openModal
+  openModal,
+  addToBusket,
+  removeFromBusket
 })
 </script>
 
 <template>
-  <modalBusket v-if="modalStatus" />
+  <modalBusket
+    :total-price="totalPrice"
+    v-if="modalStatus"
+    @create-order="createOrder"
+    :is-creating-order="isCreatingOrder.value"
+  />
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
-    <Header @open-modal="openModal" />
+    <Header :total-price="totalPrice" @open-modal="openModal" />
     <Banner />
 
     <div class="p-10">
@@ -144,7 +183,7 @@ provide('modal', {
           </div>
         </div>
       </div>
-      <cardList :items="items" @add-to-favor="addToFavor" @add-to-busket="addToBusket" />
+      <cardList :items="items" @add-to-favor="addToFavor" @add-to-busket="busketChange" />
     </div>
   </div>
 </template>

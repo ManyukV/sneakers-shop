@@ -1,5 +1,8 @@
 <script setup>
 const emit = defineEmits(['openModal'])
+defineProps({
+  totalPrice: Number
+})
 </script>
 
 <template>
@@ -17,7 +20,7 @@ const emit = defineEmits(['openModal'])
         class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black"
       >
         <img src="/cart.svg" alt="cart" />
-        <span>1205 руб</span>
+        <span>{{ totalPrice }} BYN</span>
       </li>
       <li class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
         <img src="/heart.svg" alt="cart" />

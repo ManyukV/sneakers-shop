@@ -1,6 +1,17 @@
 <script setup>
 import modaBusketTitle from './modal-busket-title.vue'
 import modalBusketList from './modal-busket-list.vue'
+import { computed } from 'vue'
+const props = defineProps({
+  totalPrice: Number,
+  isCreatingOrder: Boolean
+})
+
+const buttonDisable = computed(() =>
+  props.isCreatingOrder ? true : props.totalPrice ? false : true
+)
+
+const emit = defineEmits(['createOrder'])
 </script>
 
 <template>
@@ -13,7 +24,7 @@ import modalBusketList from './modal-busket-list.vue'
       <div class="flex gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>1200 BYN</b>
+        <b>{{ totalPrice }} BYN</b>
       </div>
       <div class="flex gap-2">
         <span>Доставка:</span>
@@ -22,7 +33,8 @@ import modalBusketList from './modal-busket-list.vue'
       </div>
 
       <button
-        disabled=""
+        :disabled="buttonDisable"
+        @click="() => emit('createOrder')"
         class="mt-4 bg-lime-500 w-full rounded-xl py-3 text-white hover:bg-lime-600 transition active:bg-lime-700 disabled:bg-slate-400 cursor-pointer"
       >
         Оформить заказ
