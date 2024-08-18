@@ -129,8 +129,14 @@ async function fetchItems() {
 }
 
 onMounted(async () => {
+  cart.value = JSON.parse(localStorage.getItem('cart') || '[]')
+
   await fetchItems()
   await fetchFavor()
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdd: cart.value.some((cartItem) => cartItem.id === item.id)
+  }))
 })
 
 watch(filters, fetchItems)
@@ -140,6 +146,14 @@ watch(cart, () => {
     isAdd: false
   }))
 })
+
+watch(
+  cart,
+  () => {
+    localStorage.setItem('cart', JSON.stringify(cart.value))
+  },
+  { deep: true }
+)
 
 provide('modal', {
   cart,

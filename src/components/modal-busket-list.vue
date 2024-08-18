@@ -6,7 +6,7 @@ const { cart, removeFromBusket } = inject('modal')
 </script>
 
 <template>
-  <div class="flex flex-col flex-1">
+  <div v-auto-animate class="flex flex-col flex-1">
     <busketCard
       @remove-from-busket="() => removeFromBusket(item)"
       v-for="item in cart"
