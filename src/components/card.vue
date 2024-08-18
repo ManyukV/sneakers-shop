@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
   id: Number,
   imgUrl: String,
   title: String,
@@ -9,6 +9,8 @@ defineProps({
   onClickAdd: Function,
   onClickFavor: Function
 })
+
+const showButton = Boolean(props.onClickAdd)
 </script>
 
 <template>
@@ -16,6 +18,7 @@ defineProps({
     class="relative border bg-white border-slate-100 rounded-3xl p-8 cursor-pointer hover:-translate-y-2 hover:shadow-xl transition"
   >
     <img
+      v-if="onClickFavor"
       @click="onClickFavor"
       class="absolute top-8 left-8"
       :src="!isFavor ? '/like-1.svg' : '/like-2.svg'"
@@ -28,7 +31,12 @@ defineProps({
         <span class="text-slate-400">Цена:</span>
         <b>{{ price }} BYN</b>
       </div>
-      <img @click="onClickAdd" :src="!isAdd ? '/plus.svg' : '/checked.svg'" alt="plus" />
+      <img
+        v-if="onClickFavor"
+        @click="onClickAdd"
+        :src="!isAdd ? '/plus.svg' : '/checked.svg'"
+        alt="plus"
+      />
     </div>
   </div>
 </template>
