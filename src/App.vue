@@ -29,22 +29,6 @@ function removeFromBusket(item) {
   item.isAdd = false
 }
 
-async function createOrder() {
-  try {
-    isCreatingOrder.value = true
-    const { data } = await axios.post('https://aa61e44bd2676303.mokky.dev/orders', {
-      items: cart.value,
-      totalPrice: totalPrice.value
-    })
-    cart.value = []
-    return data
-  } catch (err) {
-    console.log(err)
-  } finally {
-    isCreatingOrder.value = false
-  }
-}
-
 watch(
   cart,
   () => {
@@ -66,7 +50,6 @@ provide('modal', {
   <modalBusket
     :total-price="totalPrice"
     v-if="modalStatus"
-    @create-order="createOrder"
     :is-creating-order="isCreatingOrder.value"
   />
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-14">
