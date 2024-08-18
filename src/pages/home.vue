@@ -4,6 +4,9 @@ import { watch, reactive, inject, ref, onMounted } from 'vue'
 import axios from 'axios'
 import cardList from '../components/card-list.vue'
 import Banner from '../components/banner.vue'
+import Partners from '../components/partners.vue'
+import aboutUs from '@/components/about-us.vue'
+import Footer from '../components/footer.vue'
 
 const { cart, addToBusket, removeFromBusket } = inject('modal')
 const items = ref([])
@@ -112,7 +115,7 @@ watch(cart, () => {
 
 <template>
   <Banner />
-  <div class="p-10">
+  <div class="px-10 pt-10">
     <div class="flex justify-between items-center">
       <h2 class="text-3xl font-bold mb-8">Все кроссовки</h2>
 
@@ -136,4 +139,7 @@ watch(cart, () => {
     </div>
     <cardList :items="items" @add-to-favor="addToFavor" @add-to-busket="busketChange" />
   </div>
+  <Partners />
+  <aboutUs />
+  <Footer />
 </template>

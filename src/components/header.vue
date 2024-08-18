@@ -32,10 +32,6 @@ defineProps({
           <span>Избранное</span>
         </RouterLink>
       </li>
-      <li class="flex items-center gap-3 text-gray-500 cursor-pointer hover:text-black">
-        <img src="/profile.svg" alt="cart" />
-        <span>Профиль</span>
-      </li>
     </ul>
   </header>
 </template>
